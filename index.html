@@ -1,36 +1,57 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title></title>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <link rel="shortcut icon" href="favicon.png" />
-</head>
-<body>
-<div id="control">
-<!-- Tree Generator copyright Jim Blackler 2014.
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="shortcut icon" href="favicon.png" />
+  </head>
+  <body>
+    <div id="control">
+      <!-- Tree Generator copyright Jim Blackler 2014.
      All enquiries jimblackler@gmail.com
      Free software offered under the GNU GENERAL PUBLIC LICENSE v3
      See COPYING -->
-<a href="http://jimblackler.net/blog/?p=365">About the tree generator by Jim Blackler</a>
+      <a href="http://jimblackler.net/blog/?p=365"
+        >About the tree generator by Jim Blackler</a
+      >
 
-<a href="#" id="viewSave" download>View/Save diagram</a>
-<a href="index.html?data=wow">Demo (WOW)</a>
-<a href="index.html?data=collatz">Demo (Collatz)</a>
-<a href="index.html?data=java">Demo (Java Throwables)</a>
-<a href="index.html?data=animals">Demo (Animals)</a>
-<a href="index.html?data=army">Demo (Army)</a>
-<a href="index.html?data=unix">Demo (Unix)</a>
-</div>
-<div id="content">
-  <div id="editArea">
-  <label for="treeEntry">Data (editable)</label>
-  <textarea id="treeEntry">
+      <a href="#" id="viewSave" download>View/Save diagram</a>
+      <a href="index.html?data=wow">Demo (WOW)</a>
+      <a href="index.html?data=collatz">Demo (Collatz)</a>
+      <a href="index.html?data=java">Demo (Java Throwables)</a>
+      <a href="index.html?data=animals">Demo (Animals)</a>
+      <a href="index.html?data=army">Demo (Army)</a>
+      <a href="index.html?data=unix">Demo (Unix)</a>
+    </div>
+    <div id="dropdowns">
+      <!-- Dropdown menus for selecting members -->
+      <label for="member1">Select Family Member:</label>
+      <select id="member1">
+        <option value="SignificantOther">Significant Other</option>
+        <option value="Child">Child</option>
+        <option value="Parent">Parent</option>
+        <option value="Grandchild">Grandchild</option>
+        <option value="Grandparent">Grandparent</option>
+        <option value="Sibling">Sibling</option>
+      </select>
+    </div>
+    <button id="addMemberButton">Add Selected Members</button>
+    <button id="clearMemberButton">Clear Family Members</button>
+    <div>
+      <!-- List to display added family members -->
+      <ul id="familyMemberList"></ul>
+    </div>
+    <div id="content">
+      <div id="editArea">
+        <label for="treeEntry">Data (editable)</label>
+        <textarea id="treeEntry">
 a
  b
-  </textarea>
-  <label for="options">Graph options (editable)</label>
-  <textarea id="options">
+  </textarea
+        >
+        <label for="options">Graph options (editable)</label>
+        <textarea id="options">
 {
   "flipXY": 0,
   "width": 900,
@@ -49,9 +70,10 @@ a
   "minimumBreadth": 6,
   "drawRoot": false
 }
-  </textarea>
-  <label for="options">Stylesheet (editable)</label>
-  <textarea id="styles">
+  </textarea
+        >
+        <label for="options">Stylesheet (editable)</label>
+        <textarea id="styles">
 text {
   text-anchor: middle;
   font-size: small;
@@ -70,26 +92,33 @@ line {
   opacity: 0.5;
   stroke-width: 1.5;
 }
-  </textarea>
-  </div>
-  <span>
-    <svg id="diagramSvg" xmlns="http://www.w3.org/2000/svg">
-      <style id="stylesheet"> </style>
-      <defs>
-        <marker id="arrowHead" viewBox="-10 -5 10 10"
-                markerUnits="strokeWidth" markerWidth="6" markerHeight="5"
-                orient="auto">
-          <path d="M -10 -5 L 0 0 L -10 5 z"></path>
-        </marker>
-      </defs>
-      <g id="diagramGroup"></g>
-    </svg>
-  </span>
-</div>
-<script src="scripts/treeToDiagram.js"></script>
-<script src="scripts/layoutText.js"></script>
-<script src="demo_scripts/gup.js"></script>
-<script src="demo_scripts/textToTree.js"></script>
-<script src="demo_scripts/demo.js"></script>
-</body>
+  </textarea
+        >
+      </div>
+      <span>
+        <svg id="diagramSvg" xmlns="http://www.w3.org/2000/svg">
+          <style id="stylesheet"></style>
+          <defs>
+            <marker
+              id="arrowHead"
+              viewBox="-10 -5 10 10"
+              markerUnits="strokeWidth"
+              markerWidth="6"
+              markerHeight="5"
+              orient="auto"
+            >
+              <path d="M -10 -5 L 0 0 L -10 5 z"></path>
+            </marker>
+          </defs>
+          <g id="diagramGroup"></g>
+        </svg>
+      </span>
+    </div>
+    <script src="scripts/treeToDiagram.js"></script>
+    <script src="scripts/familyTree.js"></script>
+    <script src="scripts/layoutText.js"></script>
+    <script src="demo_scripts/gup.js"></script>
+    <script src="demo_scripts/textToTree.js"></script>
+    <script src="demo_scripts/demo.js"></script>
+  </body>
 </html>
