@@ -72,7 +72,6 @@ function showSecondDropdown() {
             grandparentCount++;
         }
     }
-    
 
     // Check if the selected member is "Parent", and either "Mom" or "Dad" is selected
     if (selectedMember === "Grandparent" && grandparentCount < 4) {
@@ -80,11 +79,18 @@ function showSecondDropdown() {
         var listItem = document.createElement("li");
         listItem.textContent = selectedMember;
         familyMemberList.insertBefore(listItem, familyMemberList.firstChild);
-
-    } else if ((momDad === "Mother" || momDad === "Father") && parentCount <= 2) {
+        for (var i = 0; i < listItems.length; i++) {
+            grandparentCount++;
+       }
+    } else if (momDad === "Mother" || momDad === "Father") {
         // Count the number of parent entries already in the list
         var listItems = familyMemberList.getElementsByTagName("li");
-        // Insert "Mom" or "Dad" below the last grandparent if conditions are me
+        for (var i = 0; i < listItems.length; i++) {
+                parentCount++;
+            
+        }
+        // Insert "Mom" or "Dad" below the last grandparent if conditions are met
+        if (parentCount < 3) {
 
             var lastGrandparentIndex = -1;
             for (var i = 0; i < listItems.length; i++) {
@@ -99,7 +105,7 @@ function showSecondDropdown() {
             } else {
                 familyMemberList.insertBefore(listItem, familyMemberList.firstChild);
             }
-
+        }
     } else if (selectedMember !== "Parent" && selectedMember !== "Grandparent") {
         // Add other family members below parents and grandparents
         var listItem = document.createElement("li");
