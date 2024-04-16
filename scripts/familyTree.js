@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Function to handle the addition of selected members to the list
 // Function to show the second dropdown menu when "Parent" is selected
-function showSecondDropdown() {
+function showParentDropdown() {
     var selectedMember = document.getElementById("member1").value;
     var motherOrFatherDropdown = document.getElementById("motherOrFather");
   
@@ -50,16 +50,29 @@ function showSecondDropdown() {
       motherOrFatherDropdown.style.display = "none";
     }
   }
+  function showGrandparentDropdown() {
+    var selectedMember = document.getElementById("member1").value;
+    var gpdd = document.getElementById("gpDropdown");
+  
+    if (selectedMember === "Grandparent") {
+      gpdd.style.display = "inline-block";
+    } else {
+      gpdd.style.display = "none";
+    }
+  }
   
   // Show the second dropdown menu initially
-  showSecondDropdown();
+  showParentDropdown();
+  showGrandparentDropdown();
   
   // Update the second dropdown menu when the first dropdown menu changes
-  document.getElementById("member1").addEventListener("change", showSecondDropdown);
+  document.getElementById("member1").addEventListener("change", showParentDropdown);
+  document.getElementById("member1").addEventListener("change", showGrandparentDropdown);
   
   document.getElementById("addMemberButton").addEventListener("click", function () {
     var selectedMember = document.getElementById("member1").value;
     var momDad = document.getElementById("motherOrFather").value;
+    var grandparents = document.getElementById("gpDropdown").value;
     var familyMemberList = document.getElementById("familyMemberList");
     var parentCount = 0;
     var grandparentCount = 0;
@@ -68,17 +81,16 @@ function showSecondDropdown() {
     for (var i = 0; i < listItems.length; i++) {
         if (listItems[i].textContent === "Mother" || listItems[i].textContent === "Father") {
             parentCount++;
-        } else if (listItems[i].textContent === "Grandparent") {
+        } else if (listItems[i].textContent === "Grandmother (Mother's Side)" || listItems[i].textContent === "Grandfather (Mother's Side)" || listItems[i].textContent === "Grandmother (Father's Side)" || listItems[i].textContent === "Grandfather (Father's Side)") {
             grandparentCount++;
         }
     }
     
-
     // Check if the selected member is "Parent", and either "Mom" or "Dad" is selected
-    if (selectedMember === "Grandparent" && grandparentCount < 4) {
+    if (selectedMember === "grandparent" && grandparents === "Grandmother (Mother's Side)") {
         // Insert grandparent at the beginning of the list
         var listItem = document.createElement("li");
-        listItem.textContent = selectedMember;
+        listItem.textContent = grandparents;
         familyMemberList.insertBefore(listItem, familyMemberList.firstChild);
 
     } else if ((momDad === "Mother" || momDad === "Father") && parentCount <= 2) {

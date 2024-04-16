@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Function to handle the addition of selected members to the list
 // Function to show the second dropdown menu when "Parent" is selected
-function showSecondDropdown() {
+function showParentDropdown() {
     var selectedMember = document.getElementById("member1").value;
     var motherOrFatherDropdown = document.getElementById("motherOrFather");
   
@@ -50,79 +50,72 @@ function showSecondDropdown() {
       motherOrFatherDropdown.style.display = "none";
     }
   }
+  function showGrandparentDropdown() {
+    var selectedMember = document.getElementById("member1").value;
+    var gpdd = document.getElementById("gpDropdown");
+  
+    if (selectedMember === "Grandparent") {
+      gpdd.style.display = "inline-block";
+    } else {
+      gpdd.style.display = "none";
+    }
+  }
   
   // Show the second dropdown menu initially
-  showSecondDropdown();
+  showParentDropdown();
+  showGrandparentDropdown();
   
   // Update the second dropdown menu when the first dropdown menu changes
-  document.getElementById("member1").addEventListener("change", showSecondDropdown);
+  document.getElementById("member1").addEventListener("change", showParentDropdown);
+  document.getElementById("member1").addEventListener("change", showGrandparentDropdown);
   
   document.getElementById("addMemberButton").addEventListener("click", function () {
     var selectedMember = document.getElementById("member1").value;
-    var momDad = document.getElementById("motherOrFather").value;
+    var motherOrFather = document.getElementById("motherOrFather").value;
+    var gpDropdown = document.getElementById("gpDropdown").value;
     var familyMemberList = document.getElementById("familyMemberList");
     var parentCount = 0;
     var grandparentCount = 0;
+    var meIndex = -1;
     var listItems = familyMemberList.getElementsByTagName("li");
 
+    // Count existing parents and grandparents
     for (var i = 0; i < listItems.length; i++) {
         if (listItems[i].textContent === "Mother" || listItems[i].textContent === "Father") {
             parentCount++;
-        } else if (listItems[i].textContent === "Grandparent") {
+        } else if (listItems[i].textContent.includes("Grandmother") || listItems[i].textContent.includes("Grandfather")) {
             grandparentCount++;
+        } else if (listItems[i].textContent === "Me") {
+            meIndex = i;
         }
     }
 
-    // Check if the selected member is "Parent", and either "Mom" or "Dad" is selected
-    if (selectedMember === "Grandparent" && grandparentCount < 4) {
-        // Insert grandparent at the beginning of the list
+    // Insert parent after grandparent but before "Me"
+    if (selectedMember === "Parent" && (motherOrFather === "Mother" || motherOrFather === "Father") && parentCount < 2) {
         var listItem = document.createElement("li");
-        listItem.textContent = selectedMember;
+        listItem.textContent = motherOrFather;
+        if (meIndex !== -1) {
+            familyMemberList.insertBefore(listItem, listItems[meIndex]);
+        } else {
+            familyMemberList.appendChild(listItem);
+        }
+    } 
+    // Insert grandparent at the beginning of the list
+    else if (selectedMember === "Grandparent" && grandparentCount < 4) {
+        var listItem = document.createElement("li");
+        listItem.textContent = gpDropdown;
         familyMemberList.insertBefore(listItem, familyMemberList.firstChild);
-        for (var i = 0; i < listItems.length; i++) {
-            grandparentCount++;
-       }
-    } else if (momDad === "Mother" || momDad === "Father") {
-        // Count the number of parent entries already in the list
-        var listItems = familyMemberList.getElementsByTagName("li");
-        for (var i = 0; i < listItems.length; i++) {
-                parentCount++;
-            
-        }
-        // Insert "Mom" or "Dad" below the last grandparent if conditions are met
-        if (parentCount < 3) {
-
-            var lastGrandparentIndex = -1;
-            for (var i = 0; i < listItems.length; i++) {
-                if (listItems[i].textContent === "Grandparent") {
-                    lastGrandparentIndex = i;
-                }
-            }
-            var listItem = document.createElement("li");
-            listItem.textContent = momDad;
-            if (lastGrandparentIndex !== -1) {
-                familyMemberList.insertBefore(listItem, listItems[lastGrandparentIndex].nextSibling);
-            } else {
-                familyMemberList.insertBefore(listItem, familyMemberList.firstChild);
-            }
-        }
-    } else if (selectedMember !== "Parent" && selectedMember !== "Grandparent") {
-        // Add other family members below parents and grandparents
+    } 
+    // Append other members at the end of the list
+    else if (selectedMember !== "Parent" && selectedMember !== "Grandparent") {
         var listItem = document.createElement("li");
         listItem.textContent = selectedMember;
         familyMemberList.appendChild(listItem);
     }
 
-    // Ensure "Child" appears above "Grandchild"
-    var childElement = familyMemberList.querySelector("li[textContent='Child']");
-    var grandchildElement = familyMemberList.querySelector("li[textContent='Grandchild']");
-    if (childElement && grandchildElement) {
-        familyMemberList.insertBefore(grandchildElement, childElement);
-    }
-
-    // Update the tree entry display
-    updateTreeEntry();
+    updateTreeEntry(); // Update the tree entry display
 });
+
 
 
 
