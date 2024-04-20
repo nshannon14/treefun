@@ -12,6 +12,14 @@ function updateTreeEntry() {
             spaces = "  "; // Two spaces before "Me"
         } else if (member === "Mother" || member === "Father") {
             spaces = " "; // One space before "Parent"
+        } else if (member === "Child") {
+            spaces = "   "; // One space before "Parent"
+        } else if (member === "Grandchild") {
+            spaces = "    "; // One space before "Parent"
+        } else if (member === "Sibling"){
+            spaces = "  "
+        } else if (member === "Significant Other") {
+            spaces = "  "
         }
 
         // Concatenate spaces with the member's name
@@ -71,64 +79,122 @@ function showParentDropdown() {
   
   document.getElementById("addMemberButton").addEventListener("click", function () {
     var selectedMember = document.getElementById("member1").value;
-    var momDad = document.getElementById("motherOrFather").value;
-    var grandparents = document.getElementById("gpDropdown").value;
+    var motherOrFather = document.getElementById("motherOrFather").value;
+    var gpDropdown = document.getElementById("gpDropdown").value;
     var familyMemberList = document.getElementById("familyMemberList");
     var parentCount = 0;
     var grandparentCount = 0;
+    var meIndex = -1;
     var listItems = familyMemberList.getElementsByTagName("li");
 
+    // Count existing parents and grandparents
     for (var i = 0; i < listItems.length; i++) {
         if (listItems[i].textContent === "Mother" || listItems[i].textContent === "Father") {
             parentCount++;
-        } else if (listItems[i].textContent === "Grandmother (Mother's Side)" || listItems[i].textContent === "Grandfather (Mother's Side)" || listItems[i].textContent === "Grandmother (Father's Side)" || listItems[i].textContent === "Grandfather (Father's Side)") {
+        } else if (listItems[i].textContent.includes("Grandmother") || listItems[i].textContent.includes("Grandfather")) {
             grandparentCount++;
+        } else if (listItems[i].textContent === "Me") {
+            meIndex = i;
         }
     }
-    
-    // Check if the selected member is "Parent", and either "Mom" or "Dad" is selected
-    if (selectedMember === "grandparent" && grandparents === "Grandmother (Mother's Side)") {
-        // Insert grandparent at the beginning of the list
+
+    // Insert parent after grandparent but before "Me"
+    if (selectedMember === "Parent" && motherOrFather === "Mother" && parentCount < 2) {
         var listItem = document.createElement("li");
-        listItem.textContent = grandparents;
-        familyMemberList.insertBefore(listItem, familyMemberList.firstChild);
+        listItem.textContent = motherOrFather;
+        if (gmmInList() && gfmInList()){
+            var reference = listItems[Math.max(indexGmm(), indexGfm())].nextSibling;
+            familyMemberList.insertBefore(listItem, reference);
+        } else if (gmmInList() && !gfmInList()){
+            var reference = listItems[indexGmm()].nextSibling;
+            familyMemberList.insertBefore(listItem, reference);
+        } else if (gfmInList() && !gmmInList()){
+            var reference = listItems[indexGfm()].nextSibling;
+            familyMemberList.insertBefore(listItem, reference);
+        } else if (meIndex !== -1 && !gmmInList() && !gfmInList()) {
+            familyMemberList.insertBefore(listItem, listItems[meIndex]);
+        } else {
+            familyMemberList.appendChild(listItem);
+        }
+    }else if (selectedMember === "Parent" && motherOrFather === "Father" && parentCount < 2) {
+        var listItem = document.createElement("li");
+        listItem.textContent = motherOrFather;
+        if (gmfInList() && gffInList()){
+            var reference = listItems[Math.max(indexGmf(), indexGff())].nextSibling;
+            familyMemberList.insertBefore(listItem, reference);
+        } else if (gmfInList() && !gffInList()){
+            var reference = listItems[indexGmf()].nextSibling;
+            familyMemberList.insertBefore(listItem, reference);
+        } else if (gffInList() && !gmfInList()){
+            var reference = listItems[indexGff()].nextSibling;
+            familyMemberList.insertBefore(listItem, reference);
+        } else if (meIndex !== -1 && !gmfInList() && !gffInList()) {
+            familyMemberList.insertBefore(listItem, listItems[meIndex]);
+        } else {
+            familyMemberList.appendChild(listItem);
+        }
+    } 
 
-    } else if ((momDad === "Mother" || momDad === "Father") && parentCount <= 2) {
-        // Count the number of parent entries already in the list
-        var listItems = familyMemberList.getElementsByTagName("li");
-        // Insert "Mom" or "Dad" below the last grandparent if conditions are me
-
-            var lastGrandparentIndex = -1;
-            for (var i = 0; i < listItems.length; i++) {
-                if (listItems[i].textContent === "Grandparent") {
-                    lastGrandparentIndex = i;
-                }
-            }
-            var listItem = document.createElement("li");
-            listItem.textContent = momDad;
-            if (lastGrandparentIndex !== -1) {
-                familyMemberList.insertBefore(listItem, listItems[lastGrandparentIndex].nextSibling);
-            } else {
-                familyMemberList.insertBefore(listItem, familyMemberList.firstChild);
-            }
-
-    } else if (selectedMember !== "Parent" && selectedMember !== "Grandparent") {
-        // Add other family members below parents and grandparents
+    // Insert grandparent at the beginning of the list
+    else if (selectedMember === "Grandparent" && (gpDropdown === "Grandmother (Mother's Side)" || gpDropdown === "Grandfather (Mother's Side)") && grandparentCount < 4) {
+        var listItem = document.createElement("li");
+        listItem.textContent = gpDropdown;
+        if (fatherInList()){
+            var reference = listItems[indexMother()];
+            familyMemberList.insertBefore(listItem, reference);
+        } else {
+            familyMemberList.insertBefore(listItem, familyMemberList.firstChild);
+        }
+    } 
+    else if (selectedMember === "Grandparent" && (gpDropdown === "Grandmother (Father's Side)" || gpDropdown === "Grandfather (Father's Side)") && grandparentCount < 4) {
+        var listItem = document.createElement("li");
+        listItem.textContent = gpDropdown;
+        if (fatherInList()){
+            var reference = listItems[indexfather()];
+            familyMemberList.insertBefore(listItem, reference);
+        } else {
+            familyMemberList.insertBefore(listItem, familyMemberList.firstChild);
+        }
+    } 
+    // Append other members at the end of the list
+    else if (selectedMember === "Significant Other") {
         var listItem = document.createElement("li");
         listItem.textContent = selectedMember;
-        familyMemberList.appendChild(listItem);
+        familyMemberList.insertBefore(listItem, listItems[meIndex]);
+    }     
+    else if (selectedMember === "Sibling") {
+        var listItem = document.createElement("li");
+        listItem.textContent = selectedMember;
+        familyMemberList.insertBefore(listItem, listItems[meIndex].nextSibling);
+    }
+    else if (selectedMember === "Child") {
+        var listItem = document.createElement("li");
+        listItem.textContent = selectedMember;
+        familyMemberList.insertBefore(listItem, listItems[meIndex].nextSibling);
+    }
+    else if (selectedMember === "Grandchild") {
+        var listItem = document.createElement("li");
+        listItem.textContent = selectedMember;
+        if (childInList){
+            var reference = listItems[indexChild()].nextSibling;
+            familyMemberList.insertBefore(listItem, reference)
+
+        } else {
+            // Check if there are no children in the list
+            if (!childInList()) {
+                // If no children, insert the grandchild after "Me"
+                familyMemberList.insertBefore(listItem, listItems[meIndex].nextSibling);
+            } else {
+                // If there are children, simply append the grandchild to the end of the list
+                familyMemberList.appendChild(listItem);
+            }
+        }
+        
     }
 
-    // Ensure "Child" appears above "Grandchild"
-    var childElement = familyMemberList.querySelector("li[textContent='Child']");
-    var grandchildElement = familyMemberList.querySelector("li[textContent='Grandchild']");
-    if (childElement && grandchildElement) {
-        familyMemberList.insertBefore(grandchildElement, childElement);
-    }
-
-    // Update the tree entry display
-    updateTreeEntry();
+    updateTreeEntry(); // Update the tree entry display
 });
+
 
 
 
@@ -146,4 +212,188 @@ document.getElementById("clearMemberButton").addEventListener("click", function 
     });
     updateTreeEntry();
 });
+
+// Function to check if "father" is in the list
+function fatherInList() {
+    var familyMemberList = document.getElementById("familyMemberList");
+    var listItems = familyMemberList.getElementsByTagName("li");
+    
+    for (var i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent.toLowerCase() === "father") {
+            return true; // Father is in the list
+        }
+    }
+    
+    return false; // Father is not in the list
+}
+
+function motherInList() {
+    var familyMemberList = document.getElementById("familyMemberList");
+    var listItems = familyMemberList.getElementsByTagName("li");
+    
+    for (var i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent.toLowerCase() === "mother") {
+            return true; // mother is in the list
+        }
+    }
+    
+    return false; // mother is not in the list
+}
+
+function gmmInList() {
+    var familyMemberList = document.getElementById("familyMemberList");
+    var listItems = familyMemberList.getElementsByTagName("li");
+    
+    for (var i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent.toLowerCase() === "grandmother (mother's side)") {
+            return true; // grandmother mother's side is in the list
+        }
+    }
+    
+    return false; // grandmother mothers's side is not in the list
+}
+
+function gfmInList() {
+    var familyMemberList = document.getElementById("familyMemberList");
+    var listItems = familyMemberList.getElementsByTagName("li");
+    
+    for (var i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent.toLowerCase() === "grandfather (mother's side)") {
+            return true; // grandfather mother's side is in the list
+        }
+    }
+    
+    return false; // grandfather mothers's side is not in the list
+}
+
+function gmfInList() {
+    var familyMemberList = document.getElementById("familyMemberList");
+    var listItems = familyMemberList.getElementsByTagName("li");
+    
+    for (var i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent.toLowerCase() === "grandmother (father's side)") {
+            return true; // grandmother father's side is in the list
+        }
+    }
+    
+    return false; // grandmother father's side is not in the list
+}
+
+function gffInList() {
+    var familyMemberList = document.getElementById("familyMemberList");
+    var listItems = familyMemberList.getElementsByTagName("li");
+    
+    for (var i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent.toLowerCase() === "grandfather (father's side)") {
+            return true; // grandfather father's side is in the list
+        }
+    }
+    
+    return false; // grandfather father's side is not in the list
+}
+
+function childInList() {
+    var familyMemberList = document.getElementById("familyMemberList");
+    var listItems = familyMemberList.getElementsByTagName("li");
+    
+    for (var i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent.toLowerCase() === "child") {
+            return true; // child is in the list
+        }
+    }
+    
+    return false; // child is not in the list
+}
+
+// Function to find the index of "father" in the list
+function indexfather() {
+    var familyMemberList = document.getElementById("familyMemberList");
+    var listItems = familyMemberList.getElementsByTagName("li");
+    
+    for (var i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent.toLowerCase() === "father") {
+            return i; // Return the index of "father"
+        }
+    }
+    
+    return -1; // Return -1 if "father" is not found
+}
+
+// Function to find the index of "father" in the list
+function indexMother() {
+    var familyMemberList = document.getElementById("familyMemberList");
+    var listItems = familyMemberList.getElementsByTagName("li");
+    
+    for (var i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent.toLowerCase() === "mother") {
+            return i; // Return the index of "mother"
+        }
+    }
+    
+    return -1; // Return -1 if "father" is not found
+}
+
+function indexGmm() {
+    var familyMemberList = document.getElementById("familyMemberList");
+    var listItems = familyMemberList.getElementsByTagName("li");
+    
+    for (var i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent.toLowerCase() === "grandmother (mother's side)") {
+            return i; // Return the index of "mother"
+        }
+    }
+    
+    return -1; // Return -1 if "father" is not found
+}
+function indexGfm() {
+    var familyMemberList = document.getElementById("familyMemberList");
+    var listItems = familyMemberList.getElementsByTagName("li");
+    
+    for (var i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent.toLowerCase() === "grandfather (mother's side)") {
+            return i; // Return the index of "mother"
+        }
+    }
+    
+    return -1; // Return -1 if "father" is not found
+}
+
+function indexGmf() {
+    var familyMemberList = document.getElementById("familyMemberList");
+    var listItems = familyMemberList.getElementsByTagName("li");
+    
+    for (var i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent.toLowerCase() === "grandmother (father's side)"){
+        return i; // Return the index of "mother"
+        }
+    }
+    
+    return -1; // Return -1 if "father" is not found
+}
+
+function indexGff() {
+    var familyMemberList = document.getElementById("familyMemberList");
+    var listItems = familyMemberList.getElementsByTagName("li");
+    
+    for (var i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent.toLowerCase() === "grandfather (father's side)"){
+        return i; // Return the index of father
+        }
+    }
+    
+    return -1; // Return -1 if "father" is not found
+}
+
+function indexChild() {
+    var familyMemberList = document.getElementById("familyMemberList");
+    var listItems = familyMemberList.getElementsByTagName("li");
+    
+    for (var i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent.toLowerCase() === "child"){
+        return i; // Return the index of child
+        }
+    }
+    
+    return -1; // Return -1 if "child" is not found
+}
 
