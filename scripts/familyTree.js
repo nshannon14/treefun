@@ -12,7 +12,7 @@ function updateTreeEntry() {
             spaces = "  "; // Two spaces before "Me"
         } else if (member === "Mother" || member === "Father") {
             spaces = " "; // One space before "Parent"
-        } else if (member === "Child") {
+        } else if (member.includes("Child")) {
             spaces = "   "; // One space before "Parent"
         } else if (member === "Grandchild") {
             spaces = "    "; // One space before "Parent"
@@ -68,24 +68,49 @@ function showParentDropdown() {
       gpdd.style.display = "none";
     }
   }
+
+  function showChildDropdown() {
+    var selectedMember = document.getElementById("member1").value;
+    var cdd  = document.getElementById("childrenDropdown");
+  
+    if (selectedMember === "Child") {
+      cdd.style.display = "inline-block";
+    } else {
+      cdd.style.display = "none";
+    }
+  }
   
   // Show the second dropdown menu initially
   showParentDropdown();
   showGrandparentDropdown();
+  showChildDropdown();
   
   // Update the second dropdown menu when the first dropdown menu changes
   document.getElementById("member1").addEventListener("change", showParentDropdown);
   document.getElementById("member1").addEventListener("change", showGrandparentDropdown);
-  
+
+ document.getElementById("member1").addEventListener("change", function() {
+    var selectedMember = document.getElementById("member1").value;
+    var childrenDropdown = document.getElementById("childrenDropdown");
+
+    if (selectedMember === "Grandchild") {
+        childrenDropdown.style.display = "inline-block";
+    } else {
+        childrenDropdown.style.display = "none";
+    }
+});
+  var numChild = 1
   document.getElementById("addMemberButton").addEventListener("click", function () {
     var selectedMember = document.getElementById("member1").value;
     var motherOrFather = document.getElementById("motherOrFather").value;
     var gpDropdown = document.getElementById("gpDropdown").value;
+    var childSelected = document.getElementById("childrenDropdown").value;
     var familyMemberList = document.getElementById("familyMemberList");
     var parentCount = 0;
     var grandparentCount = 0;
     var meIndex = -1;
     var listItems = familyMemberList.getElementsByTagName("li");
+
 
     // Count existing parents and grandparents
     for (var i = 0; i < listItems.length; i++) {
@@ -156,7 +181,6 @@ function showParentDropdown() {
             familyMemberList.insertBefore(listItem, familyMemberList.firstChild);
         }
     } 
-    // Append other members at the end of the list
     else if (selectedMember === "Significant Other") {
         var listItem = document.createElement("li");
         listItem.textContent = selectedMember;
@@ -165,38 +189,37 @@ function showParentDropdown() {
     else if (selectedMember === "Sibling") {
         var listItem = document.createElement("li");
         listItem.textContent = selectedMember;
-        familyMemberList.insertBefore(listItem, listItems[meIndex].nextSibling);
+        familyMemberList.appendChild(listItem);
     }
     else if (selectedMember === "Child") {
         var listItem = document.createElement("li");
-        listItem.textContent = selectedMember;
+        listItem.textContent = selectedMember + numChild;
         familyMemberList.insertBefore(listItem, listItems[meIndex].nextSibling);
+        numChild++
     }
     else if (selectedMember === "Grandchild") {
         var listItem = document.createElement("li");
         listItem.textContent = selectedMember;
-        if (childInList){
-            var reference = listItems[indexChild()].nextSibling;
-            familyMemberList.insertBefore(listItem, reference)
 
-        } else {
-            // Check if there are no children in the list
-            if (!childInList()) {
-                // If no children, insert the grandchild after "Me"
-                familyMemberList.insertBefore(listItem, listItems[meIndex].nextSibling);
-            } else {
-                // If there are children, simply append the grandchild to the end of the list
-                familyMemberList.appendChild(listItem);
+        // Find the index of the selected child in the family member list
+        var childIndex = -1;
+        for (var i = 0; i < listItems.length; i++) {
+            if (listItems[i].textContent === childSelected) {
+                childIndex = i;
+                break;
             }
         }
-        
+        if (childIndex !== -1){
+            familyMemberList.insertBefore(listItem, listItems[childIndex].nextSibling);}
+            else {
+                familyMemberList.append(listItem)
+            }
+         
     }
-
+    populateChildrenDropdown();
     updateTreeEntry(); // Update the tree entry display
+
 });
-
-
-
 
 
 
@@ -211,6 +234,8 @@ document.getElementById("clearMemberButton").addEventListener("click", function 
         }
     });
     updateTreeEntry();
+    numChild = 1;
+    populateChildrenDropdown([]);
 });
 
 // Function to check if "father" is in the list
@@ -297,7 +322,7 @@ function childInList() {
     var listItems = familyMemberList.getElementsByTagName("li");
     
     for (var i = 0; i < listItems.length; i++) {
-        if (listItems[i].textContent.toLowerCase() === "child") {
+        if (listItems[i].textContent.includes("Child")) {
             return true; // child is in the list
         }
     }
@@ -389,11 +414,48 @@ function indexChild() {
     var listItems = familyMemberList.getElementsByTagName("li");
     
     for (var i = 0; i < listItems.length; i++) {
-        if (listItems[i].textContent.toLowerCase() === "child"){
+        if (listItems[i].textContent.includes("Child")){
         return i; // Return the index of child
         }
     }
     
     return -1; // Return -1 if "child" is not found
 }
+
+function getChildrenList() {
+    var familyMemberList = document.getElementById("familyMemberList");
+    var children = [];
+
+    // Iterate through the list items
+    Array.from(familyMemberList.children).forEach(li => {
+        var member = li.textContent.trim();
+
+        // Check if the member is a child
+        if (member.includes("Child")) {
+            children.push(member); // Add the child to the list of children
+        }
+    });
+
+    return children; // Return the list of children
+}
+
+// Function to populate the children dropdown menu
+function populateChildrenDropdown() {
+    var childrenDropdown = document.getElementById("childrenDropdown");
+    var childrenList = getChildrenList(); 
+
+    // Clear existing options
+    childrenDropdown.innerHTML = "";
+
+    // Create an option for each child and add it to the dropdown
+    childrenList.forEach(child => {
+        var option = document.createElement("option");
+        option.text = child;
+        childrenDropdown.add(option);
+    });
+}
+
+// Call the function to populate the dropdown initially
+
+
 
