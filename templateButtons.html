@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Add Family Members</title>
+  </head>
+  <body>
+    <h2>Add Family Members</h2>
+    <label for="siblings">How many siblings do you have?</label>
+    <input type="number" id="siblings" min="0" />
+    <br /><br />
+    <label for="hasKidsYes">Do you have kids? (Yes)</label>
+    <input type="checkbox" name="hasKids" id="hasKidsYes" />
+    <label for="hasKidsNo">No</label>
+    <input type="checkbox" name="hasKids" id="hasKidsNo" />
+    <div id="kidsInput" style="display: none">
+      <label for="numKids">How many kids do you have?</label>
+      <input type="number" id="numKids" min="0" />
+    </div>
+    <br /><br />
+    <button onclick="addFamilyMembers()">Add Family Members</button>
+    <script>
+      var hasKidsYes = document.getElementById("hasKidsYes");
+      var hasKidsNo = document.getElementById("hasKidsNo");
+
+      hasKidsYes.addEventListener("change", function () {
+        if (this.checked) {
+          hasKidsNo.checked = false;
+          document.getElementById("kidsInput").style.display = "block";
+        } else {
+          document.getElementById("kidsInput").style.display = "none";
+        }
+      });
+
+      hasKidsNo.addEventListener("change", function () {
+        if (this.checked) {
+          hasKidsYes.checked = false;
+          document.getElementById("kidsInput").style.display = "none";
+        }
+      });
+
+      function addFamilyMembers() {
+        // Function to add family members to the tree
+        // You can call your function here to add family members to the tree
+
+        // Redirect to familyTemplate1.html
+        window.location.href = "templateTree.html";
+
+        // Example:
+        // myFunctionToAddFamilyMembers();
+      }
+    </script>
+  </body>
+</html>

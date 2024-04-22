@@ -12,8 +12,17 @@
      All enquiries jimblackler@gmail.com
      Free software offered under the GNU GENERAL PUBLIC LICENSE v3
      See COPYING -->
+      <a href="http://jimblackler.net/blog/?p=365"
+        >About the tree generator by Jim Blackler</a
+      >
 
-      <a href="#" id="viewSave"></a>
+      <a href="#" id="viewSave" download>View/Save diagram</a>
+      <a href="index.html?data=wow">Demo (WOW)</a>
+      <a href="index.html?data=collatz">Demo (Collatz)</a>
+      <a href="index.html?data=java">Demo (Java Throwables)</a>
+      <a href="index.html?data=animals">Demo (Animals)</a>
+      <a href="index.html?data=army">Demo (Army)</a>
+      <a href="index.html?data=unix">Demo (Unix)</a>
     </div>
     <div id="dropdowns">
       <!-- Dropdown menus for selecting members -->
@@ -21,31 +30,49 @@
       <select id="member1">
         <option value="Significant Other">Significant Other</option>
         <option value="Child">Child</option>
+        <option value="Parent">Parent</option>
         <option value="Grandchild">Grandchild</option>
+        <option value="Grandparent">Grandparent</option>
         <option value="Sibling">Sibling</option>
       </select>
 
+      <select id="motherOrFather" style="display: none">
+        <option value="Mother">Mother</option>
+        <option value="Father">Father</option>
+      </select>
+
+      <select id="gpDropdown" style="display: none">
+        <option value="Grandmother (Mother's Side)">
+          Grandmother (Mother's Side)
+        </option>
+        <option value="Grandfather (Mother's Side)">
+          Grandfather (Mother's Side)
+        </option>
+        <option value="Grandmother (Father's Side)">
+          Grandmother (Father's Side)
+        </option>
+        <option value="Grandfather (Father's Side)">
+          Grandfather (Father's Side)
+        </option>
+      </select>
       <select id="childrenDropdown" style="display: none"></select>
     </div>
     <button id="addMemberButton">Add Selected Members</button>
     <button id="clearMemberButton">Clear Family Members</button>
     <div>
       <!-- List to display added family members -->
-      <ul id="familyMemberList" style="display: none"></ul>
+      <ul id="familyMemberList"></ul>
     </div>
     <div id="content">
       <div id="editArea">
-        <textarea id="treeEntry" style="display: none">
-Grandfather (Father's Side)
-Grandmother (Father's Side)
-    Father
-Grandmother (Mother's Side)
-Grandfather (Mother's Side)
-    Mother
-     Me
+        <label for="treeEntry">Data (editable)</label>
+        <textarea id="treeEntry">
+a
+ b
   </textarea
         >
-        <textarea id="options" style="display: none">
+        <label for="options">Graph options (editable)</label>
+        <textarea id="options">
 {
   "flipXY": 0,
   "width": 900,
@@ -66,7 +93,8 @@ Grandfather (Mother's Side)
 }
   </textarea
         >
-        <textarea id="styles" style="display: none">
+        <label for="options">Stylesheet (editable)</label>
+        <textarea id="styles">
 text {
   text-anchor: middle;
   font-size: small;
@@ -108,7 +136,7 @@ line {
       </span>
     </div>
     <script src="scripts/treeToDiagram.js"></script>
-    <script src="scripts/familyTemplate1.js"></script>
+    <script src="scripts/familyTree.js"></script>
     <script src="scripts/layoutText.js"></script>
     <script src="demo_scripts/gup.js"></script>
     <script src="demo_scripts/textToTree.js"></script>
