@@ -31,7 +31,7 @@
     <button id="clearMemberButton">Clear Family Members</button>
     <div>
       <!-- List to display added family members -->
-      <ul id="familyMemberList" style="display: none"></ul>
+      <ul id="familyMemberList"></ul>
     </div>
     <div id="content">
       <div id="editArea">
@@ -107,6 +107,15 @@ line {
         </svg>
       </span>
     </div>
+    <script>
+      const urlSearchParams = new URLSearchParams(window.location.search);
+
+      // Convert the URLSearchParams object to a plain JavaScript object containing the query parameters
+      const params = Object.fromEntries(urlSearchParams.entries());
+
+      // Retrieve the value of the siblings parameter
+      const siblingsValue = params["siblings"];
+    </script>
     <script src="scripts/treeToDiagram.js"></script>
     <script src="scripts/familyTemplate1.js"></script>
     <script src="scripts/layoutText.js"></script>

@@ -17,7 +17,7 @@
       <input type="number" id="numKids" min="0" />
     </div>
     <br /><br />
-    <button onclick="addFamilyMembers()">Add Family Members</button>
+    <button id="updateTemplate">Add Family Members</button>
     <script>
       var hasKidsYes = document.getElementById("hasKidsYes");
       var hasKidsNo = document.getElementById("hasKidsNo");
@@ -38,16 +38,26 @@
         }
       });
 
-      function addFamilyMembers() {
-        // Function to add family members to the tree
-        // You can call your function here to add family members to the tree
-
+      // Function to add family members to the tree
+      function addMembers() {
         // Redirect to familyTemplate1.html
-        window.location.href = "templateTree.html";
-
-        // Example:
-        // myFunctionToAddFamilyMembers();
+        window.location.href = "templateTree.html?siblings=" + numSiblings; //+ "&grandchildren=" grandhcildre;
       }
+      var numSiblings = 0;
+      function updateSiblings() {
+        var siblingsBox = document.getElementById("siblings");
+        numSiblings = parseInt(siblingsBox.value);
+      }
+      document
+        .getElementById("updateTemplate")
+        .addEventListener("click", updateSiblings);
+
+      // Attach click event listener to the button
+      document
+        .getElementById("updateTemplate")
+        .addEventListener("click", addMembers);
     </script>
+    <script src="addToTemplate.js"></script>
+    <script src="familyTemplate1.js"></script>
   </body>
 </html>

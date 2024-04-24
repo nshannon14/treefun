@@ -38,7 +38,10 @@ function updateTreeEntry() {
 // Update the tree entry display initially
 updateTreeEntry();
 
+// Call the function to populate the dropdown initially
+
 // Initialize the family member list with "Me"
+var numSiblings =0;
 document.addEventListener("DOMContentLoaded", function() {
     var familyMemberList = document.getElementById("familyMemberList");
     var meItem = document.createElement("li");
@@ -48,6 +51,10 @@ document.addEventListener("DOMContentLoaded", function() {
     var gfmItem = document.createElement("li");
     var gmfItem = document.createElement("li");
     var gffItem = document.createElement("li");
+    var siblingItem = document.createElement("li");
+
+
+
     meItem.textContent = "Me";
     momItem.textContent = "Mother";
     dadItem.textContent = "Father";
@@ -55,6 +62,7 @@ document.addEventListener("DOMContentLoaded", function() {
     gfmItem.textContent = "Grandfather (Mother's Side)";
     gmfItem.textContent = "Grandmother (Father's Side)";
     gffItem.textContent = "Grandfather (Father's Side)";
+    siblingItem.textContent = "Sibling";
     familyMemberList.appendChild(gffItem);
     familyMemberList.appendChild(gmfItem);
     familyMemberList.appendChild(dadItem);
@@ -65,6 +73,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     familyMemberList.appendChild(meItem);
 
+    for (var i = 0; i < siblingsValue; i++) {
+        var newSiblingItem = siblingItem.cloneNode(true); 
+        familyMemberList.appendChild(newSiblingItem); 
+    } 
+    
     updateTreeEntry();
     
 });
@@ -110,6 +123,11 @@ function showParentDropdown() {
         childrenDropdown.style.display = "none";
     }
 });
+
+
+
+
+
   var numChild = 1
   document.getElementById("addMemberButton").addEventListener("click", function () {
     var selectedMember = document.getElementById("member1").value;
@@ -225,7 +243,18 @@ function populateChildrenDropdown() {
     });
 }
 
-// Call the function to populate the dropdown initially
 
+// Function to add siblings to the family tree
+function addSiblings(numSiblings) {
+    var familyMemberList = document.getElementById("familyMemberList");
 
+    for (var i = 0; i < numSiblings; i++) {
+        var siblingItem = document.createElement("li");
+        siblingItem.textContent = "Sibling";
+        familyMemberList.appendChild(siblingItem);
+    }
+
+    // Update the tree entry display
+    updateTreeEntry();
+}
 
