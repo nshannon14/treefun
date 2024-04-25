@@ -12,6 +12,14 @@
     <input type="checkbox" name="hasKids" id="hasKidsYes" />
     <label for="hasKidsNo">No</label>
     <input type="checkbox" name="hasKids" id="hasKidsNo" />
+
+    <label for="hasSoYes">Do you have a Significant Other? (Yes)</label>
+    <input type="checkbox" name="hasSo" id="hasSoYes" />
+    <label for="hasSoYes">No</label>
+
+    <input type="checkbox" name="hasSo" id="hasSoNo" />
+    <input type="number" id="numSo" value="0" style="display: none" min="0" />
+
     <div id="kidsInput" style="display: none">
       <label for="numKids">How many kids do you have?</label>
       <input type="number" id="numKids" min="0" />
@@ -21,6 +29,8 @@
     <script>
       var hasKidsYes = document.getElementById("hasKidsYes");
       var hasKidsNo = document.getElementById("hasKidsNo");
+      var hasSoYes = document.getElementById("hasSoYes");
+      var hasSoNo = document.getElementById("hasSoNo");
 
       hasKidsYes.addEventListener("change", function () {
         if (this.checked) {
@@ -38,19 +48,58 @@
         }
       });
 
+      hasSoYes.addEventListener("change", function () {
+        if (this.checked) {
+          hasSoNo.checked = false; // Uncheck the other option
+        }
+      });
+
+      hasSoNo.addEventListener("change", function () {
+        if (this.checked) {
+          hasSoYes.checked = false; // Uncheck the other option
+        }
+      });
+
       // Function to add family members to the tree
       function addMembers() {
         // Redirect to familyTemplate1.html
-        window.location.href = "templateTree.html?siblings=" + numSiblings; //+ "&grandchildren=" grandhcildre;
+        window.location.href =
+          "templateTree.html?siblings=" +
+          numSiblings +
+          "&numKids=" +
+          numChildren +
+          "&numSo=" +
+          SO;
       }
+      var numChildren = 0;
       var numSiblings = 0;
+      var SO = 0;
+
+      function updateSo() {
+        if (hasSoYes.checked) {
+          SO = 1;
+        } else {
+          SO = 0;
+        }
+      }
       function updateSiblings() {
         var siblingsBox = document.getElementById("siblings");
         numSiblings = parseInt(siblingsBox.value);
       }
+      function updateKids() {
+        var kidBox = document.getElementById("numKids");
+        numChildren = parseInt(kidBox.value);
+      }
+
       document
         .getElementById("updateTemplate")
         .addEventListener("click", updateSiblings);
+      document
+        .getElementById("updateTemplate")
+        .addEventListener("click", updateKids);
+      document
+        .getElementById("updateTemplate")
+        .addEventListener("click", updateSo);
 
       // Attach click event listener to the button
       document

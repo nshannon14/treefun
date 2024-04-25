@@ -52,6 +52,8 @@ document.addEventListener("DOMContentLoaded", function() {
     var gmfItem = document.createElement("li");
     var gffItem = document.createElement("li");
     var siblingItem = document.createElement("li");
+    var kidsItem = document.createElement("li");
+    var soItem = document.createElement("li");
 
 
 
@@ -63,6 +65,10 @@ document.addEventListener("DOMContentLoaded", function() {
     gmfItem.textContent = "Grandmother (Father's Side)";
     gffItem.textContent = "Grandfather (Father's Side)";
     siblingItem.textContent = "Sibling";
+    kidsItem.textContent = "Child";
+    soItem.textContent = "Significant Other";
+   
+
     familyMemberList.appendChild(gffItem);
     familyMemberList.appendChild(gmfItem);
     familyMemberList.appendChild(dadItem);
@@ -70,13 +76,24 @@ document.addEventListener("DOMContentLoaded", function() {
     familyMemberList.appendChild(gmmItem);
     familyMemberList.appendChild(gfmItem);
     familyMemberList.appendChild(momItem);
+    
+    if (soValue === 1){
+        familyMemberList.appendChild(soItem);
+    }
 
     familyMemberList.appendChild(meItem);
+
+    for (var i = 0; i < kidsValue; i++) {
+        var newKidsItem = kidsItem.cloneNode(true); 
+        newKidsItem.textContent = "Child" + i;
+        familyMemberList.appendChild(newKidsItem); 
+    } 
 
     for (var i = 0; i < siblingsValue; i++) {
         var newSiblingItem = siblingItem.cloneNode(true); 
         familyMemberList.appendChild(newSiblingItem); 
     } 
+
     
     updateTreeEntry();
     
